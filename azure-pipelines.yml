@@ -9,30 +9,50 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+- stage: rununittest
+  displayName: Run Unit Tests
+  jobs:
+    - job: rununittest
+      displayName: Run Unit Test Job
+      pool: 
+        vmimage: 'ubuntu-latest'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '2.1.504'
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: 'apis/poi/poi.sln'
-    feedsToUse: 'select'
+      steps:
+      - script: echo Hello, world!
+        displayName: 'Run a one-line script'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: 'apis/poi/poi.sln'
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: 'apis/poi/tests/IntegrationTests/IntegrationTests.csproj'
-    arguments: '--logger:trx'
+      - script: |
+          echo Add other tasks to build, test, and deploy your project.
+          echo See https://aka.ms/yaml
+        displayName: 'Run a multi-line script'
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: '2.1.504'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'restore'
+          projects: 'apis/poi/poi.sln'
+          feedsToUse: 'select'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'build'
+          projects: 'apis/poi/poi.sln'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: 'apis/poi/tests/IntegrationTests/IntegrationTests.csproj'
+          arguments: '--logger:trx'
+          
+    - job: createWorkItem
+      displayName: Create work item on faiure
+      dependsOn: rununittest
+      condition: failed()
+      steps:
+        - task: CreateWorkItem@1
+          displayName: Create work item on failure
+          inputs:
+            workItemType: 'Issue'
+            title: 'Build $(Build.BuildId) failed'
