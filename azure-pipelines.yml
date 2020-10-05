@@ -45,8 +45,8 @@ stages:
           command: 'test'
           projects: 'apis/poi/tests/IntegrationTests/IntegrationTests.csproj'
           arguments: '--logger:trx'
-          
-    - job: createWorkItem
+
+    - job: createWorkitem
       displayName: Create work item on faiure
       dependsOn: rununittest
       condition: failed()
