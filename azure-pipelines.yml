@@ -9,6 +9,9 @@ trigger:
      - '*'
    exclude:
      - master
+ paths:
+   include:
+     - apis/poi/*
 
 pool:
   vmImage: 'ubuntu-latest'
