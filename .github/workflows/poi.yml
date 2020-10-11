@@ -53,7 +53,7 @@ jobs:
         run: dotnet build --configuration Release apis/poi/tests/UnitTests/UnitTests.csproj
       
       - name: .Net Test
-        run: dotnet test --no-retsore --verbosity normal apis/poi/tests/UnitTests /p:CollectCoverege=true /p:CoverletOutput=lcov/ /p:CoverletOutputFormat=lcov
+        run: dotnet test --no-restore --verbosity normal apis/poi/tests/UnitTests /p:CollectCoverege=true /p:CoverletOutput=lcov/ /p:CoverletOutputFormat=lcov
       
       - name: Coveralls
         uses: coverallsapp/github-action@master
